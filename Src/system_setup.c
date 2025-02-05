@@ -1,6 +1,9 @@
 #include "main.h"
 #include <stm32f0xx_hal.h>
 
+void My_HAL_RCC_GPIOC_CLK_ENABLE(void) {
+    RCC->AHBENR |= RCC_AHBENR_GPIOCEN; // 使能 GPIOC 时钟
+}
 /**
   * @brief  This function is executed in case of error occurrence.
   * @param  None
