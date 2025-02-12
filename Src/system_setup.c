@@ -1,9 +1,7 @@
 #include "main.h"
 #include <stm32f0xx_hal.h>
+#include <hal_gpio.h>
 
-void My_HAL_RCC_GPIOC_CLK_ENABLE(void) {
-    RCC->AHBENR |= RCC_AHBENR_GPIOCEN; // 使能 GPIOC 时钟
-}
 /**
   * @brief  This function is executed in case of error occurrence.
   * @param  None
@@ -95,3 +93,18 @@ void _close(void) { Error_Handler(); }
 void _lseek(void) { Error_Handler(); }
 void _read(void) { Error_Handler(); }
 void _write(void) { Error_Handler(); }
+
+
+void  My_HAL_RCC_GPIOC_CLK_ENABLE(void)
+{
+RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
+}
+
+void  My_HAL_RCC_GPIOA_CLK_ENABLE(void)
+{
+  RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
+}
+
+void My_HAL_RCC_SYSCFG_CLK_ENABLE(void){
+  RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+}

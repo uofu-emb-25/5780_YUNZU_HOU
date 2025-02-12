@@ -3,8 +3,6 @@
 
 void SystemClock_Config(void);
 void My_HAL_RCC_GPIOC_CLK_ENABLE(void);
-void Configure_EXTI0(void);
-void Configure_SYSCFG(void);
 
 int lab1_main(void);
 int lab2_main(void);
