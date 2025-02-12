@@ -72,7 +72,33 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-    HAL_IncTick();
+    static volatile uint32_t tick_count = 0;
+    
+    HAL_IncTick(); // 保持 HAL 计时功能
+    tick_count++;
+
+    if (tick_count >= 200)  // 每 200ms 触发一次
+    {
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); // 切换蓝色 LED
+        tick_count = 0;
+    }
+}
+
+/**
+  * @brief  This function handles EXTI0_1 interrupt request.
+  * @param  None
+  * @retval None
+  */
+void EXTI0_1_IRQHandler(void)
+{
+    // 检查 EXTI0 是否触发
+    if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET)
+    {
+        __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);  // 清除 EXTI0 挂起标志
+        
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // 切换 绿 LED
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // 切换 橙 LED
+    }
 }
 
 /******************************************************************************/
