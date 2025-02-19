@@ -1,6 +1,7 @@
 #include <stm32f0xx_it.h>
 #include <assert.h>
 #include <hal_gpio.h>
+#include <pwm_config.h>
 #include <main.h>
 
 // Define global TIM handle
@@ -14,53 +15,23 @@ int lab3_main(void) {
     // Enable GPIOC clock
     RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
 
-    // Define GPIO initialization structure
+    // Initialize PC6 and PC7 as PWM output pins
     GPIO_InitTypeDef GPIO_InitStruct;
-    GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;   // PC8, PC9
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;      // Push-pull output
-    GPIO_InitStruct.Pull = GPIO_NOPULL;              // No pull-up or pull-down
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;     // Low speed mode
-
-    // Initialize PC8 and PC9 as LED output
+    GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;   // PC6, PC7
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;         // Alternate function mode (for PWM)
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF1_TIM3;      // TIM3_CH1 & TIM3_CH2 alternate mapping
     My_HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    // Turn on PC8 initially
-    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
-    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
+    // Initialize TIM3 to enable PWM
+    TIM3_PWM_Init();
 
-    // **Initialize TIM2 (4Hz interrupt)**
-    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;  // Enable TIM2 clock
-    htim2.Instance = TIM2;
-    htim2.Init.Prescaler = 999;    // 8MHz / (999+1) = 8kHz
-    htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-    htim2.Init.Period = 1999;      // 8kHz / (1999+1) = 4Hz (0.25s interrupt)
-    htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-    HAL_TIM_Base_Init(&htim2);
+    // Start TIM3
+    TIM3->CR1 |= TIM_CR1_CEN;
 
-    // Enable TIM2 update interrupt
-    TIM2->DIER |= TIM_DIER_UIE;
-    TIM2->SR &= ~TIM_SR_UIF;  // Clear any pending interrupt flags
-
-    // Set NVIC priority and enable TIM2 interrupt
-    HAL_NVIC_SetPriority(TIM2_IRQn, 2, 0);
-    HAL_NVIC_EnableIRQ(TIM2_IRQn);
-
-    // Start TIM2
-    TIM2->CR1 |= TIM_CR1_CEN;
-
-    // **Infinite loop (LED toggling is handled in the interrupt routine)**
+    // Infinite loop (PWM brightness adjustment is handled automatically)
     while (1) {
         // No operations needed in the main loop
-    }
-}
-
-// **TIM2 Interrupt Handler**
-void TIM2_IRQHandler(void) {
-    if (TIM2->SR & TIM_SR_UIF) {  // Check update interrupt flag
-        TIM2->SR &= ~TIM_SR_UIF;  // Clear interrupt flag
-
-        // Toggle LED states
-        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
-        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
     }
 }
