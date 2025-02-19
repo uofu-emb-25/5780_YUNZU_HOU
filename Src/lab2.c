@@ -13,8 +13,6 @@ void EXTI0_1_IRQHandler(void) {
         EXTI->PR |= (1 << 0);   // **立即清除中断标志**
         
         My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8 | GPIO_PIN_9);
-        for (volatile uint32_t i = 0; i < 1500000; i++);  
-        // **交给主循环处理长任务**
         iCount = 1500000;  
     }
 }
@@ -56,8 +54,8 @@ int lab2_main(void) {
     NVIC_EnableIRQ(EXTI0_1_IRQn);
     //Test for LAB2.7
     //NVIC_SetPriority(EXTI0_1_IRQn, 1);   // **降低 EXTI0_1 优先级**
-    NVIC_SetPriority(SysTick_IRQn, 2);   // **确保 SysTick 有最高优先级**
-    NVIC_SetPriority(EXTI0_1_IRQn, 3);   // **降低 EXTI0_1 优先级**
+    NVIC_SetPriority(SysTick_IRQn, 1);   // **确保 SysTick 有最高优先级**
+    NVIC_SetPriority(EXTI0_1_IRQn, 2);   // **降低 EXTI0_1 优先级**
 
     // 连接 PA0 到 EXTI0
     SYSCFG_setup();
