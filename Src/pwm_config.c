@@ -25,8 +25,8 @@ void TIM3_PWM_Init(void) {
     TIM3->CCER |= TIM_CCER_CC1E | TIM_CCER_CC2E;
 
     // 设置初始占空比为 ARR 的 20%
-    TIM3->CCR1 = (15 * TIM3->ARR) / 100;  // 20% 占空比
-    TIM3->CCR2 = (85 * TIM3->ARR) / 100;  // 20% 占空比
+    TIM3->CCR1 = (50 * TIM3->ARR) / 100;  // 20% 占空比
+    TIM3->CCR2 = (50 * TIM3->ARR) / 100;  // 20% 占空比
 
     // 使能 TIM3 (但暂时不启动)
     TIM3->CR1 |= TIM_CR1_ARPE;  // 使能自动重装载预装载

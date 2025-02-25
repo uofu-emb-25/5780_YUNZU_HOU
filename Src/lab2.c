@@ -53,9 +53,9 @@ int lab2_main(void) {
     // 配置 NVIC
     NVIC_EnableIRQ(EXTI0_1_IRQn);
     //Test for LAB2.7
-    //NVIC_SetPriority(EXTI0_1_IRQn, 1);   // **降低 EXTI0_1 优先级**
-    NVIC_SetPriority(SysTick_IRQn, 1);   // **确保 SysTick 有最高优先级**
-    NVIC_SetPriority(EXTI0_1_IRQn, 2);   // **降低 EXTI0_1 优先级**
+    NVIC_SetPriority(EXTI0_1_IRQn, 1);   // **降低 EXTI0_1 优先级**
+    NVIC_SetPriority(SysTick_IRQn, 2);   // **确保 SysTick 有最高优先级**
+    //NVIC_SetPriority(EXTI0_1_IRQn, 2);   // **降低 EXTI0_1 优先级**
 
     // 连接 PA0 到 EXTI0
     SYSCFG_setup();
