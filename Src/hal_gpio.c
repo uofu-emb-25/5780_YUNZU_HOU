@@ -60,7 +60,11 @@ void My_HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState 
 
 void My_HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 {
-    GPIOx->ODR ^= GPIO_Pin;
+    uint16_t temp = GPIOx->ODR;
+    GPIOx->BRR = GPIO_Pin;
+    GPIOx->BSRR = temp ^ GPIO_Pin;
+
+
 }
 
 void EXTI_rising_edge_trigger(void){
